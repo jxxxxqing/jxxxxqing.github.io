@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨境卖家全链路合规导航</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%); min-height: 100vh; color: #333; }
+        .app-container { max-width: 900px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* 隐藏所有页面，仅显示当前活动页 */
+        .page { display: none; padding: 40px 20px; animation: fadeIn 0.6s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 通用标题和按钮样式 */
+        h1 { color: #2c3e50; margin-bottom: 20px; font-size: 2.5em; text-align: center; }
+        h2 { color: #3498db; border-left: 5px solid #3498db; padding-left: 15px; margin: 30px 0 20px; }
+        .btn {
+            display: inline-block; background: linear-gradient(to right, #4a6fa5, #385d8a); color: white;
+            padding: 14px 35px; border: none; border-radius: 50px; font-size: 1.1em; font-weight: 600;
+            cursor: pointer; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(58, 108, 173, 0.25);
+            margin-top: 20px;
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(58, 108, 173, 0.35); background: linear-gradient(to right, #385d8a, #2c3e50); }
+        .btn-secondary { background: linear-gradient(to right, #95a5a6, #7f8c8d); }
+        .btn-secondary:hover { background: linear-gradient(to right, #7f8c8d, #626e6f); }
+
+        /* --- 第一页：介绍页 --- */
+        #intro-page { text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .logo { font-size: 4em; margin-bottom: 20px; }
+        .tagline { font-size: 1.4em; color: #7f8c8d; margin-bottom: 40px; max-width: 700px; line-height: 1.6; }
+        .feature-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin: 40px 0; }
+        .feature { background: white; padding: 25px; border-radius: 15px; width: 250px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); transition: transform 0.3s; }
+        .feature:hover { transform: translateY(-8px); }
+        .feature-icon { font-size: 2.5em; margin-bottom: 15px; color: #3498db; }
+        .feature h3 { margin-bottom: 10px; color: #2c3e50; }
+
+        /* --- 第二页：流程选择页 --- */
+        #process-page { text-align: center; }
+        .process-subtitle { color: #666; font-size: 1.2em; margin-bottom: 40px; }
+        .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 30px; }
+        .process-card {
+            background: white; padding: 30px 25px; border-radius: 15px; cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05); border: 2px solid transparent; transition: all 0.3s;
+        }
+        .process-card:hover, .process-card.selected {
+            border-color: #3498db; box-shadow: 0 10px 25px rgba(52, 152, 219, 0.15); transform: translateY(-5px);
+        }
+        .process-card h3 { color: #2c3e50; margin-bottom: 10px; }
+        .process-card p { color: #666; font-size: 0.95em; line-height: 1.5; }
+
+        /* --- 第三页：查询与结果页 --- */
+        #query-page {}
+        .selection-summary { background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05); }
+        .selection-summary p { margin: 10px 0; font-size: 1.1em; }
+        .selection-summary span { font-weight: bold; color: #e74c3c; }
+        .control-panel { background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05); }
+        select {
+            width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 1em; margin: 10px 0 25px 0;
+            background-color: #f8f9fa; transition: border 0.3s;
+        }
+        select:focus { border-color: #3498db; outline: none; }
+        #results { margin-top: 30px; }
+        .risk-item {
+            background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid #e74c3c; animation: fadeIn 0.5s ease;
+        }
+        .risk-item.law { border-left-color: #3498db; }
+        .risk-item.culture { border-left-color: #f39c12; }
+        .risk-item h4 { color: #2c3e50; margin-bottom: 10px; }
+        .risk-item p { margin: 8px 0; line-height: 1.6; }
+        .highlight { background-color: #fffde7; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .loading, .error { text-align: center; padding: 40px; font-size: 1.1em; color: #666; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 40px; }
+    
+
+/* ===== 结果区翻页控件（只影响 results 内部） ===== */
+.result-pager{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin:12px 0 16px;
+}
+.pager-btn{
+    padding:10px 18px;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    background:linear-gradient(135deg,#3f6fa6,#2f5b93);
+    color:#fff;
+    font-weight:700;
+    box-shadow:0 8px 18px rgba(0,0,0,.12);
+    transition:transform .15s ease, opacity .15s ease;
+}
+.pager-btn:hover{ transform:translateY(-1px); }
+.pager-btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+    box-shadow:none;
+    transform:none;
+}
+.pager-info{
+    min-width:240px;
+    text-align:center;
+    font-weight:700;
+    color:#2c3e50;
+}
+</style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 第一页：介绍页 -->
+        <div id="intro-page" class="page active">
+            <div class="logo">🛡️</div>
+            <h1>跨境卖家全链路合规导航</h1>
+            <p class="tagline">专为“一带一路”跨境电商打造的智能风控指南。从选品上架到交易收款，为您精准预警法律与文化风险，让出海之路安全又顺畅。</p>
+            <div class="feature-list">
+                <div class="feature">
+                    <div class="feature-icon">📋</div>
+                    <h3>五大流程覆盖</h3>
+                    <p>完整贯穿商品上架、营销推广、交易履约等核心业务环节。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🌏</div>
+                    <h3>多国合规智库</h3>
+                    <p>深度整合印尼、沙特、波兰等典型市场的法规与文化禁忌。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>快速风险扫描</h3>
+                    <p>选择您的业务场景，即刻获取结构化风险清单与应对建议。</p>
+                </div>
+            </div>
+            <button class="btn" onclick="showPage('process-page')">开始风险评估 →</button>
+        </div>
+
+        <!-- 第二页：流程选择页 -->
+        <div id="process-page" class="page">
+            <h1>请选择您关心的业务环节</h1>
+            <p class="process-subtitle">我们将针对该环节，为您分析目标市场的具体风险。</p>
+            <div class="process-grid">
+                <div class="process-card" onclick="selectProcess(this, '商品上架与禁售风险')">
+                    <h3>📦 商品上架与禁售</h3>
+                    <p>涉及产品准入、认证、标签、禁售品及文化禁忌。</p>
+                </div>
+                <div class="process-card" onclick="selectProcess(this, '营销与广告合规风险')">
+                    <h3>📢 营销与广告合规</h3>
+                    <p>涵盖广告法、促销规则、宗教与文化敏感内容。</p>
+                </div>
+                <div class="process-card" onclick="selectProcess(this, '客户与交易履行风险')">
+                    <h3>🤝 客户与交易履行</h3>
+                    <p>包括消费者权益、合同条款、支付、物流与售后服务。</p>
+                </div>
+                <div class="process-card" onclick="selectProcess(this, '数据与隐私合规风险')">
+                    <h3>🔐 数据与隐私合规</h3>
+                    <p>关于GDPR等数据收集、存储、使用和跨境传输的规范。</p>
+                </div>
+                <div class="process-card" onclick="selectProcess(this, '知识产权与税务风险')">
+                    <h3>⚖️ 知识产权与税务</h3>
+                    <p>关注商标版权、专利侵权以及VAT税务申报等。</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="showPage('intro-page')">← 返回介绍</button>
+                <button class="btn" id="nextToQueryBtn" onclick="goToQueryPage()" disabled>下一步：选择国家 →</button>
+            </div>
+        </div>
+
+        <!-- 第三页：查询与结果页 -->
+        <div id="query-page" class="page">
+            <h1>风险详情查询</h1>
+            <div class="selection-summary">
+                <p>当前评估环节：<span id="current-process-span">未选择</span></p>
+                <p>请选择目标市场以获取具体的合规风险清单：</p>
+            </div>
+            <div class="control-panel">
+                <label for="country-select"><strong>选择目标国家：</strong></label>
+                <select id="country-select">
+                    <option value="">-- 请选择 --</option>
+                    <option value="印度尼西亚">印度尼西亚</option>
+                    <option value="沙特阿拉伯">沙特阿拉伯</option>
+                    <option value="波兰">波兰</option>
+                    <option value="欧盟">欧盟（通用）</option>
+                </select>
+                <button class="btn" id="search-btn" onclick="loadAndFilterData()" disabled>🔍 查询风险</button>
+                <button class="btn btn-secondary" onclick="showPage('process-page')">← 重新选择环节</button>
+            </div>
+            <div id="results-container">
+                <div class="loading" id="loading" style="display:none;">正在加载风险数据库...</div>
+                <div id="results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="all-risk-data.js"></script>
+
+    <script>
+        // 状态变量
+        let currentProcess = '';
+        let allData = [];
+
+        // ==============================
+        // 1. 页面导航函数
+        // ==============================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // ==============================
+        // 2. 流程选择逻辑
+        // ==============================
+        function selectProcess(cardElement, process) {
+            // 更新UI
+            document.querySelectorAll('.process-card').forEach(c => c.classList.remove('selected'));
+            cardElement.classList.add('selected');
+            // 更新状态并启用按钮
+            currentProcess = process;
+            document.getElementById('nextToQueryBtn').disabled = false;
+        }
+
+        function goToQueryPage() {
+            if (!currentProcess) return;
+            // 更新第三页的摘要
+            document.getElementById('current-process-span').textContent = currentProcess;
+            // 清空上一轮结果
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('country-select').selectedIndex = 0;
+            document.getElementById('search-btn').disabled = true;
+            // 显示第三页
+            showPage('query-page');
+        }
+
+        // ==============================
+        // 3. 数据加载与查询逻辑
+        // ==============================
+        // !!! 重要：请将这里的文件名改为您自己的CSV文件路径 !!!
+        const DATA_URL = 'all-risk-data.csv'
+
+        // 监听国家选择变化
+        document.getElementById('country-select').addEventListener('change', function() {
+            document.getElementById('search-btn').disabled = !this.value;
+        });
+
+        async function loadAndFilterData() {
+            const country = document.getElementById('country-select').value;
+            const resultsDiv = document.getElementById('results');
+            const loadingDiv = document.getElementById('loading');
+
+            if (!currentProcess || !country) {
+                alert('请先完成流程和国家选择。');
+                return;
+            }
+
+            // 显示加载
+            resultsDiv.innerHTML = '';
+            loadingDiv.style.display = 'block';
+
+            try {
+                // 首次访问时加载数据
+                if (allData.length === 0) {
+                    // 优先从本地脚本 all-risk-data.js 读取（支持 file:// 直接双击打开）
+                    if (window.ALL_RISK_DATA && Array.isArray(window.ALL_RISK_DATA) && window.ALL_RISK_DATA.length) {
+                        allData = window.ALL_RISK_DATA;
+                    } else {
+                        const response = await fetch(DATA_URL);
+
+                    if (!response.ok) throw new Error(`无法加载数据文件，请检查文件路径和名称：${DATA_URL}`);
+                    const csvText = await response.text();
+                    allData = parseCSV(csvText);
+                    }
+                }
+
+                // 过滤数据
+                const filtered = allData.filter(row =>
+                    row.业务流程 === currentProcess && row.目标国家 === country
+                );
+
+                // 显示结果
+                displayResults(filtered);
+
+            } catch (error) {
+                console.error('查询失败:', error);
+                resultsDiv.innerHTML = `<div class="error">
+                    <p>❌ 数据加载或查询失败。</p>
+                    <p><strong>可能原因：</strong></p>
+                    <ul>
+                        <li>1. 数据文件 <code>${DATA_URL}</code> 不存在或路径错误。</li>
+                        <li>2. 文件未与网页放在同一文件夹。</li>
+                        <li>3. 文件内容格式有误（请确保为UTF-8编码的CSV）。</li>
+                    </ul>
+                    <p>请检查并刷新页面重试。</p>
+                </div>`;
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        // CSV解析函数（与之前相同，确保兼容）
+        function parseCSV(text) {
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            if (lines.length < 2) return [];
+            const headers = lines[0].split(',').map(h => h.trim());
+            return lines.slice(1).map(line => {
+                const values = line.split(',').map(v => v.trim());
+                let obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = values[index] || '';
+                });
+                return obj;
+            });
+        }
+
+        // 结果展示函数
+        // =========================
+// 查询结果：分页展示（每页5条，只改结果区，不动其它页面）
+// =========================
+let __pagedResults = [];
+let __pagedPage = 1;
+let __pagedCountry = "";
+const __pagedPageSize = 5;
+
+function __norm(v) {
+    if (v === null || v === undefined) return "";
+    // 处理 all-risk-data.js 里可能出现的 NaN
+    if (typeof v === "number" && Number.isNaN(v)) return "";
+    return String(v).replace(/\u00A0/g, " ").trim();
+}
+
+function __renderOne(item) {
+    const title = __norm(item["风险要点"]) || __norm(item["风险分类"]) || "风险提示";
+    const desc = __norm(item["风险描述"]);
+    const law = __norm(item["法规依据"]);
+    const consequence = __norm(item["可能后果"]);
+    const advice = __norm(item["应对建议"]);
+
+    return `
+        <div class="risk-item">
+            <strong>${title}</strong>
+            <p><strong>📌 风险描述:</strong> ${desc || "暂无"}</p>
+            <p><strong>⚖️ 法规/禁忌依据:</strong> ${law || "暂无"}</p>
+            <p><strong>🚨 可能后果:</strong> <span class="highlight">${consequence || "暂无"}</span></p>
+            <p><strong>💡 应对建议:</strong> ${advice || "暂无"}</p>
+        </div>
+    `;
+}
+
+function __renderPager() {
+    const total = __pagedResults.length;
+    const totalPages = Math.max(1, Math.ceil(total / __pagedPageSize));
+    const page = Math.min(Math.max(1, __pagedPage), totalPages);
+    const start = (page - 1) * __pagedPageSize;
+    const end = Math.min(start + __pagedPageSize, total);
+
+    if (totalPages <= 1) return "";
+
+    const prevDisabled = (page <= 1) ? "disabled" : "";
+    const nextDisabled = (page >= totalPages) ? "disabled" : "";
+
+    return `
+        <div class="result-pager">
+            <button class="pager-btn" onclick="prevResultPage()" ${prevDisabled}>上一页</button>
+            <span class="pager-info">第 ${page} / ${totalPages} 页 · ${start + 1}-${end} / ${total}</span>
+            <button class="pager-btn" onclick="nextResultPage()" ${nextDisabled}>下一页</button>
+        </div>
+    `;
+}
+
+function __renderResultsPage() {
+    const resultsDiv = document.getElementById("results");
+    const country = __pagedCountry || (document.getElementById("country-select")?.value || "");
+
+    if (!__pagedResults || __pagedResults.length === 0) {
+        resultsDiv.innerHTML = `
+            <h3 style="color:#e74c3c; margin-top:15px;">未找到匹配结果</h3>
+            <p>请尝试选择其他国家或重新选择评估环节。</p>
+        `;
+        return;
+    }
+
+    const total = __pagedResults.length;
+    const totalPages = Math.max(1, Math.ceil(total / __pagedPageSize));
+    const page = Math.min(Math.max(1, __pagedPage), totalPages);
+    __pagedPage = page;
+
+    const start = (page - 1) * __pagedPageSize;
+    const end = Math.min(start + __pagedPageSize, total);
+    const pageItems = __pagedResults.slice(start, end);
+
+    const header = `
+        <h3>📊 查询结果： ${currentProcess}（${country}）</h3>
+        <p>共发现 <strong>${total}</strong> 条风险提示：</p>
+    `;
+
+    const cards = pageItems.map(__renderOne).join("");
+    resultsDiv.innerHTML = header + __renderPager() + cards + __renderPager();
+
+    // 让用户翻页时视野保持在结果区（不影响其它区域）
+    try { resultsDiv.scrollIntoView({ behavior: "smooth", block: "start" }); } catch(e) {}
+}
+
+function prevResultPage() {
+    if (__pagedPage > 1) {
+        __pagedPage--;
+        __renderResultsPage();
+    }
+}
+
+function nextResultPage() {
+    const totalPages = Math.max(1, Math.ceil((__pagedResults?.length || 0) / __pagedPageSize));
+    if (__pagedPage < totalPages) {
+        __pagedPage++;
+        __renderResultsPage();
+    }
+}
+
+function displayResults(data) {
+    const country = document.getElementById("country-select").value;
+
+    __pagedResults = Array.isArray(data) ? data : [];
+    __pagedPage = 1;
+    __pagedCountry = country;
+
+    __renderResultsPage();
+}
+</script>
+</body>
+</html>
