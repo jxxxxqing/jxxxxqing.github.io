@@ -3,430 +3,1159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>跨境卖家全链路合规导航</title>
+    <title>丝路e栈 · 国别风险合规专家</title>
+    <!-- Inter 字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; }
-        body { background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%); min-height: 100vh; color: #333; }
-        .app-container { max-width: 900px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
-
-        /* 隐藏所有页面，仅显示当前活动页 */
-        .page { display: none; padding: 40px 20px; animation: fadeIn 0.6s ease; }
+        /* 原有样式保持不变（略），为节省篇幅此处省略，实际使用时请保留之前的所有样式 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', '思源黑体', 'Microsoft YaHei', sans-serif;
+            background-color: #F8F9FA;
+            color: #0A2540;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        .app-container { max-width: 1280px; margin: 0 auto; padding: 0 32px; position: relative; }
+        .page { display: none; animation: fadeSlide 0.5s ease-out; padding: 24px 0 60px; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeSlide {
+            0% { opacity: 0.3; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
 
-        /* 通用标题和按钮样式 */
-        h1 { color: #2c3e50; margin-bottom: 20px; font-size: 2.5em; text-align: center; }
-        h2 { color: #3498db; border-left: 5px solid #3498db; padding-left: 15px; margin: 30px 0 20px; }
         .btn {
-            display: inline-block; background: linear-gradient(to right, #4a6fa5, #385d8a); color: white;
-            padding: 14px 35px; border: none; border-radius: 50px; font-size: 1.1em; font-weight: 600;
-            cursor: pointer; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(58, 108, 173, 0.25);
-            margin-top: 20px;
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 12px 28px; border-radius: 60px; font-weight: 600;
+            font-size: 1rem; border: none; cursor: pointer;
+            transition: all 0.2s ease; box-shadow: 0 6px 14px rgba(10,37,64,0.08);
+            gap: 8px; text-decoration: none; letter-spacing: 0.3px;
         }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(58, 108, 173, 0.35); background: linear-gradient(to right, #385d8a, #2c3e50); }
-        .btn-secondary { background: linear-gradient(to right, #95a5a6, #7f8c8d); }
-        .btn-secondary:hover { background: linear-gradient(to right, #7f8c8d, #626e6f); }
+        .btn-primary {
+            background: linear-gradient(145deg, #F4A261, #E76F51);
+            color: white;
+            box-shadow: 0 8px 20px rgba(231,111,81,0.3);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(145deg, #E76F51, #F4A261);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(231,111,81,0.4);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(10,37,64,0.2);
+            color: #0A2540;
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            border-color: #F4A261;
+            background: rgba(244,162,97,0.04);
+            transform: translateY(-3px);
+        }
+        .btn-secondary {
+            background: white;
+            color: #0A2540;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .btn-secondary:hover {
+            background: #F8F9FA;
+            border-color: #F4A261;
+        }
+        .btn-sm { padding: 8px 20px; font-size: 0.9rem; }
 
-        /* --- 第一页：介绍页 --- */
-        #intro-page { text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .logo { font-size: 4em; margin-bottom: 20px; }
-        .tagline { font-size: 1.4em; color: #7f8c8d; margin-bottom: 40px; max-width: 700px; line-height: 1.6; }
-        .feature-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin: 40px 0; }
-        .feature { background: white; padding: 25px; border-radius: 15px; width: 250px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); transition: transform 0.3s; }
-        .feature:hover { transform: translateY(-8px); }
-        .feature-icon { font-size: 2.5em; margin-bottom: 15px; color: #3498db; }
-        .feature h3 { margin-bottom: 10px; color: #2c3e50; }
+        h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; }
+        h1 { font-size: 3.2rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+        h2 { font-size: 2rem; margin-bottom: 1.5rem; }
 
-        /* --- 第二页：流程选择页 --- */
-        #process-page { text-align: center; }
-        .process-subtitle { color: #666; font-size: 1.2em; margin-bottom: 40px; }
-        .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 30px; }
+        .navbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 0; margin-bottom: 24px; border-bottom: 1px solid rgba(10,37,64,0.06);
+            flex-wrap: wrap; gap: 16px;
+        }
+        .logo-area { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+        .logo-main { font-size: 1.8rem; font-weight: 700; color: #0A2540; }
+        .logo-main span { color: #F4A261; }
+        .logo-tagline { font-size: 0.9rem; color: #5A6B7A; font-weight: 500; border-left: 2px solid #F4A261; padding-left: 12px; }
+        .nav-links { display: flex; gap: 24px; font-weight: 500; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; color: #0A2540; cursor: pointer; transition: color 0.2s; }
+        .nav-links a:hover { color: #F4A261; }
+        .auth-buttons { display: flex; gap: 12px; align-items: center; }
+        #user-greeting { font-weight: 600; color: #0A2540; display: none; align-items: center; gap: 8px; }
+
+        .card {
+            background: white; border-radius: 28px; padding: 28px 24px;
+            box-shadow: 0 12px 36px rgba(10,37,64,0.06);
+            transition: transform 0.2s, box-shadow 0.2s; border: 1px solid rgba(244,162,97,0.08);
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 24px 48px rgba(10,37,64,0.12); }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10,37,64,0.5); backdrop-filter: blur(6px);
+            align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white; border-radius: 40px; padding: 40px; max-width: 400px; width: 90%;
+            box-shadow: 0 30px 60px rgba(10,37,64,0.4); position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 20px; right: 24px; font-size: 28px; cursor: pointer; color: #5A6B7A;
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: #E76F51; }
+        .modal-content input {
+            width: 100%; padding: 14px 20px; border-radius: 60px; border: 1px solid #E2E8F0;
+            margin: 16px 0; font-size: 1rem; transition: border 0.2s;
+        }
+        .modal-content input:focus { outline: none; border-color: #F4A261; }
+
+        .ai-uploader {
+            background: white; border: 2px dashed #CBD5E0; border-radius: 60px;
+            padding: 6px 6px 6px 24px; display: flex; align-items: center; gap: 8px;
+            margin: 20px 0; transition: border-color 0.2s;
+        }
+        .ai-uploader:focus-within { border-color: #F4A261; }
+        .ai-uploader input {
+            flex: 1; border: none; background: transparent; padding: 12px 0; font-size: 1rem;
+            outline: none;
+        }
+        #ai-result { background: #F8F9FA; border-radius: 24px; padding: 24px; margin-top: 16px; }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin: 40px 0;
+        }
         .process-card {
-            background: white; padding: 30px 25px; border-radius: 15px; cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05); border: 2px solid transparent; transition: all 0.3s;
+            background: white;
+            border-radius: 28px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.02);
         }
-        .process-card:hover, .process-card.selected {
-            border-color: #3498db; box-shadow: 0 10px 25px rgba(52, 152, 219, 0.15); transform: translateY(-5px);
+        .process-card:hover {
+            border-color: #F4A261;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(244,162,97,0.1);
         }
-        .process-card h3 { color: #2c3e50; margin-bottom: 10px; }
-        .process-card p { color: #666; font-size: 0.95em; line-height: 1.5; }
+        .process-card.selected {
+            border-color: #E76F51;
+            background: #FFF8F0;
+        }
 
-        /* --- 第三页：查询与结果页 --- */
-        #query-page {}
-        .selection-summary { background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05); }
-        .selection-summary p { margin: 10px 0; font-size: 1.1em; }
-        .selection-summary span { font-weight: bold; color: #e74c3c; }
-        .control-panel { background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05); }
-        select {
-            width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 1em; margin: 10px 0 25px 0;
-            background-color: #f8f9fa; transition: border 0.3s;
+        .query-header {
+            background: white;
+            border-radius: 32px;
+            padding: 32px 40px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 28px rgba(10,37,64,0.04);
+            border: 1px solid rgba(244,162,97,0.1);
         }
-        select:focus { border-color: #3498db; outline: none; }
-        #results { margin-top: 30px; }
+        .query-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #0A2540, #1A3A5F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .query-header p { color: #5A6B7A; font-size: 1.1rem; }
+        .process-badge {
+            background: #FFF8F0;
+            border: 1px solid #F4A26140;
+            border-radius: 60px;
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .process-badge i { font-size: 2rem; color: #F4A261; }
+        .process-badge span { font-size: 1.2rem; font-weight: 500; color: #0A2540; }
+        .process-badge strong {
+            background: #E76F51; color: white; padding: 6px 20px; border-radius: 40px;
+            font-size: 1rem; margin-left: 12px;
+        }
+        .query-control-card {
+            background: white; border-radius: 28px; padding: 32px;
+            box-shadow: 0 12px 36px rgba(10,37,64,0.04); border: 1px solid rgba(244,162,97,0.08);
+        }
+        .query-row { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
+        .query-field { flex: 2; min-width: 280px; }
+        .query-field label { font-weight: 600; color: #0A2540; margin-bottom: 10px; display: block; font-size: 0.95rem; }
+        .query-field select {
+            width: 100%; padding: 16px 24px; border-radius: 60px; border: 1px solid #E2E8F0;
+            background: white; font-size: 1rem; transition: all 0.2s;
+            appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230A2540' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 20px center; background-size: 16px;
+        }
+        .query-field select:focus { border-color: #F4A261; box-shadow: 0 0 0 3px rgba(244,162,97,0.1); outline: none; }
+        .query-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+
         .risk-item {
-            background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
-            border-left: 6px solid #e74c3c; animation: fadeIn 0.5s ease;
+            background: white; border-radius: 24px; padding: 28px; margin-bottom: 20px;
+            border-left: 6px solid #E76F51; box-shadow: 0 12px 24px rgba(10,37,64,0.04);
         }
-        .risk-item.law { border-left-color: #3498db; }
-        .risk-item.culture { border-left-color: #f39c12; }
-        .risk-item h4 { color: #2c3e50; margin-bottom: 10px; }
-        .risk-item p { margin: 8px 0; line-height: 1.6; }
-        .highlight { background-color: #fffde7; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-        .loading, .error { text-align: center; padding: 40px; font-size: 1.1em; color: #666; }
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 40px; }
-    
+        .risk-item strong { font-size: 1.1rem; display: block; margin-bottom: 16px; }
+        .risk-item p { margin: 8px 0; display: flex; gap: 8px; }
+        .risk-item i { color: #F4A261; width: 20px; margin-top: 3px; }
+        .result-pager {
+            display: flex; justify-content: center; align-items: center; gap: 16px; margin: 28px 0;
+        }
+        .pager-btn {
+            background: #0A2540; color: white; border: none; padding: 8px 24px;
+            border-radius: 60px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+        }
+        .pager-btn:hover:not(:disabled) { background: #F4A261; }
+        .pager-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* ===== 结果区翻页控件（只影响 results 内部） ===== */
-.result-pager{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:14px;
-    margin:12px 0 16px;
-}
-.pager-btn{
-    padding:10px 18px;
-    border:none;
-    border-radius:999px;
-    cursor:pointer;
-    background:linear-gradient(135deg,#3f6fa6,#2f5b93);
-    color:#fff;
-    font-weight:700;
-    box-shadow:0 8px 18px rgba(0,0,0,.12);
-    transition:transform .15s ease, opacity .15s ease;
-}
-.pager-btn:hover{ transform:translateY(-1px); }
-.pager-btn:disabled{
-    opacity:.45;
-    cursor:not-allowed;
-    box-shadow:none;
-    transform:none;
-}
-.pager-info{
-    min-width:240px;
-    text-align:center;
-    font-weight:700;
-    color:#2c3e50;
-}
-</style>
+        .resources-wrapper { display: flex; gap: 30px; margin-top: 30px; }
+        .articles-grid {
+            flex: 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+        }
+        .article-card {
+            background: white; border-radius: 28px; padding: 28px 24px;
+            box-shadow: 0 12px 36px rgba(10,37,64,0.04); border: 1px solid rgba(244,162,97,0.08);
+            transition: all 0.2s;
+        }
+        .article-card:hover { transform: translateY(-5px); box-shadow: 0 24px 48px rgba(10,37,64,0.12); }
+        .article-card h3 { font-size: 1.3rem; margin-bottom: 12px; color: #0A2540; }
+        .article-card p { color: #5A6B7A; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.6; }
+        .article-link {
+            color: #E76F51; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+            transition: color 0.2s;
+        }
+        .article-link:hover { color: #F4A261; }
+        .article-detail {
+            margin-top: 20px; padding-top: 20px; border-top: 1px solid #E2E8F0;
+            display: none; color: #3E5A70; font-size: 0.95rem;
+        }
+        .article-detail.active { display: block; }
+
+        .wechat-card {
+            flex: 1; background: white; border-radius: 28px; padding: 32px 24px;
+            box-shadow: 0 12px 36px rgba(10,37,64,0.04); border: 1px solid rgba(244,162,97,0.08);
+            text-align: center; display: flex; flex-direction: column; align-items: center;
+        }
+        .wechat-icon { font-size: 3.5rem; color: #F4A261; margin-bottom: 16px; }
+        .wechat-card h3 { font-size: 1.5rem; margin-bottom: 8px; }
+        .wechat-sub { color: #5A6B7A; margin-bottom: 24px; }
+        .qr-placeholder {
+            width: 160px; height: 160px; margin: 16px auto;
+            border: 2px dashed #F4A261; border-radius: 24px; overflow: hidden; background-color: white;
+        }
+        .qr-placeholder img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .wechat-offer { font-size: 1.1rem; font-weight: 600; color: #0A2540; margin: 16px 0 8px; }
+        .wechat-desc {
+            color: #5A6B7A; font-size: 0.95rem; max-width: 280px; margin-bottom: 20px; line-height: 1.5;
+        }
+        .badge-counter {
+            background: #0A2540; color: white; padding: 12px 24px; border-radius: 60px;
+            font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-top: 8px;
+        }
+        .badge-counter i { color: #F4A261; }
+
+        .database-layout { display: flex; gap: 30px; margin-top: 30px; }
+        .filter-sidebar {
+            flex: 0 0 260px; background: white; border-radius: 28px; padding: 24px;
+            box-shadow: 0 12px 36px rgba(10,37,64,0.04); align-self: start;
+        }
+        .filter-group { margin-bottom: 24px; }
+        .filter-group label { font-weight: 600; display: block; margin-bottom: 10px; color: #0A2540; }
+        .filter-group select, .filter-group input {
+            width: 100%; padding: 12px 16px; border-radius: 40px; border: 1px solid #E2E8F0; background: #F8F9FA;
+        }
+        .database-results { flex: 1; }
+        .database-card {
+            background: white; border-radius: 24px; padding: 24px; margin-bottom: 20px;
+            border-left: 4px solid #F4A261; box-shadow: 0 8px 20px rgba(10,37,64,0.04);
+        }
+        .database-card h4 { margin-bottom: 8px; color: #0A2540; }
+        .database-card p { margin: 6px 0; color: #3E5A70; font-size: 0.95rem; }
+        .database-card .meta { display: flex; gap: 16px; font-size: 0.85rem; color: #718096; margin-top: 12px; }
+
+        .footer {
+            margin-top: 80px; padding: 48px 0 24px; border-top: 1px solid rgba(10,37,64,0.06);
+            display: flex; flex-wrap: wrap; justify-content: space-between; color: #5A6B7A;
+        }
+
+        @media (max-width: 800px) {
+            .articles-grid { grid-template-columns: 1fr; }
+            .resources-wrapper { flex-direction: column; }
+            .database-layout { flex-direction: column; }
+            .query-row { flex-direction: column; }
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- 第一页：介绍页 -->
-        <div id="intro-page" class="page active">
-            <div class="logo">🛡️</div>
-            <h1>跨境卖家全链路合规导航</h1>
-            <p class="tagline">专为“一带一路”跨境电商打造的智能风控指南。从选品上架到交易收款，为您精准预警法律与文化风险，让出海之路安全又顺畅。</p>
-            <div class="feature-list">
-                <div class="feature">
-                    <div class="feature-icon">📋</div>
-                    <h3>五大流程覆盖</h3>
-                    <p>完整贯穿商品上架、营销推广、交易履约等核心业务环节。</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🌏</div>
-                    <h3>多国合规智库</h3>
-                    <p>深度整合印尼、沙特、波兰等典型市场的法规与文化禁忌。</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">⚡</div>
-                    <h3>快速风险扫描</h3>
-                    <p>选择您的业务场景，即刻获取结构化风险清单与应对建议。</p>
-                </div>
+        <!-- 导航 -->
+        <div class="navbar">
+            <div class="logo-area">
+                <div class="logo-main">丝路<span>e栈</span></div>
+                <div class="logo-tagline">国别风险合规专家</div>
             </div>
-            <button class="btn" onclick="showPage('process-page')">开始风险评估 →</button>
+            <div class="nav-links">
+                <a onclick="showPage('intro-page'); return false;">首页</a>
+                <a onclick="showPage('process-page'); return false;">风险场景</a>
+                <a onclick="showPage('database-page'); return false;">国别数据库</a>
+                <a onclick="goToSection('pricing-section'); return false;">定价</a>
+                <a onclick="goToSection('resources-section'); return false;">资源中心</a>
+            </div>
+            <div class="auth-buttons" id="auth-buttons">
+                <span id="user-greeting"></span>
+                <button class="btn btn-outline" onclick="openLoginModal()">登录</button>
+                <button class="btn btn-primary" onclick="openRegisterModal()">注册</button>
+            </div>
         </div>
 
-        <!-- 第二页：流程选择页 -->
-        <div id="process-page" class="page">
-            <h1>请选择您关心的业务环节</h1>
-            <p class="process-subtitle">我们将针对该环节，为您分析目标市场的具体风险。</p>
-            <div class="process-grid">
-                <div class="process-card" onclick="selectProcess(this, '商品上架与禁售风险')">
-                    <h3>📦 商品上架与禁售</h3>
-                    <p>涉及产品准入、认证、标签、禁售品及文化禁忌。</p>
-                </div>
-                <div class="process-card" onclick="selectProcess(this, '营销与广告合规风险')">
-                    <h3>📢 营销与广告合规</h3>
-                    <p>涵盖广告法、促销规则、宗教与文化敏感内容。</p>
-                </div>
-                <div class="process-card" onclick="selectProcess(this, '客户与交易履行风险')">
-                    <h3>🤝 客户与交易履行</h3>
-                    <p>包括消费者权益、合同条款、支付、物流与售后服务。</p>
-                </div>
-                <div class="process-card" onclick="selectProcess(this, '数据与隐私合规风险')">
-                    <h3>🔐 数据与隐私合规</h3>
-                    <p>关于GDPR等数据收集、存储、使用和跨境传输的规范。</p>
-                </div>
-                <div class="process-card" onclick="selectProcess(this, '知识产权与税务风险')">
-                    <h3>⚖️ 知识产权与税务</h3>
-                    <p>关注商标版权、专利侵权以及VAT税务申报等。</p>
+        <!-- 模态框：登录/注册共用 -->
+        <div id="modal" class="modal">
+            <div class="modal-content" id="modal-content">
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+
+        <!-- 第一页：品牌首页 -->
+        <div id="intro-page" class="page active">
+            <!-- Hero 区域 -->
+            <div class="hero-wrapper" style="position: relative; padding: 40px 0 60px; background: radial-gradient(circle at 10% 30%, rgba(244,162,97,0.03) 0%, transparent 30%), radial-gradient(circle at 90% 70%, rgba(10,37,64,0.02) 0%, transparent 40%); border-radius: 48px; margin-bottom: 40px;">
+                <div class="hero-content" style="max-width: 900px; margin: 0 auto; text-align: center;">
+                    <h1 style="font-size: 3.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 1.2rem; background: linear-gradient(135deg, #0A2540 0%, #1A3A5F 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">跨境电商国别风险<span style="background: linear-gradient(145deg, #F4A261, #E76F51); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">规避指南</span></h1>
+                    <div style="font-size: 1.4rem; font-weight: 400; color: #4A6A85; margin-bottom: 1.8rem;">深度聚焦印尼 · 沙特 ·波兰 | 全流程场景化合规风控</div>
+                    <p style="font-size: 1.1rem; color: #3E5A70; max-width: 680px; margin: 0 auto 2.2rem; background: rgba(255,255,255,0.7); padding: 20px 28px; border-radius: 60px;">整合宗教文化、法律法规与商业政策，将碎片化风险转化为结构化清单。AI赋能，助您在商品上架、营销、交易环节主动避坑。</p>
+                    <div style="display: flex; gap: 24px; justify-content: center; margin-bottom: 48px;">
+                        <button class="btn btn-primary" onclick="showPage('process-page')">开始免费查询</button>
+                        <button class="btn btn-outline" onclick="openVideoModal()">观看场景演示</button>
+                    </div>
+                    <div style="display: flex; gap: 28px; justify-content: center; flex-wrap: wrap;">
+                        <div style="background: white; padding: 14px 32px; border-radius: 60px; font-weight: 600; font-size: 1.2rem; box-shadow: 0 12px 28px rgba(10,37,64,0.08); border: 1px solid rgba(244,162,97,0.2); display: inline-flex; align-items: center; gap: 12px;"><span style="font-size:1.6rem;">🇮🇩</span> 印度尼西亚</div>
+                        <div style="background: white; padding: 14px 32px; border-radius: 60px; font-weight: 600; font-size: 1.2rem; box-shadow: 0 12px 28px rgba(10,37,64,0.08); border: 1px solid rgba(244,162,97,0.2); display: inline-flex; align-items: center; gap: 12px;"><span style="font-size:1.6rem;">🇸🇦</span> 沙特阿拉伯</div>
+                        <div style="background: white; padding: 14px 32px; border-radius: 60px; font-weight: 600; font-size: 1.2rem; box-shadow: 0 12px 28px rgba(10,37,64,0.08); border: 1px solid rgba(244,162,97,0.2); display: inline-flex; align-items: center; gap: 12px;"><span style="font-size:1.6rem;">🇵🇱</span> 波兰</div>
+                    </div>
                 </div>
             </div>
-            <div class="nav-buttons">
-                <button class="btn btn-secondary" onclick="showPage('intro-page')">← 返回介绍</button>
-                <button class="btn" id="nextToQueryBtn" onclick="goToQueryPage()" disabled>下一步：选择国家 →</button>
+
+            <!-- AI智能检测工具交互区 -->
+            <div id="ai-demo" style="background:white; border-radius:32px; padding:32px; margin:60px 0;">
+                <h2>AI 智能检测工具</h2>
+                <p style="color:#5A6B7A;">输入商品标题或描述，1分钟识别潜在风险（基于您的合规数据库）</p>
+                <div class="ai-uploader">
+                    <input type="text" id="ai-input" placeholder="例如：真丝围巾 动物图案 出口沙特">
+                    <button class="btn btn-primary" id="ai-detect-btn">检测风险</button>
+                </div>
+                <div id="ai-result">
+                    <p style="color:#718096;">👆 输入内容后点击检测，将匹配现有风险数据库</p>
+                </div>
+            </div>
+
+            <!-- 灵活定价方案（三个卡片） -->
+            <div id="pricing-section" style="margin: 80px 0;">
+                <h2>灵活定价方案</h2>
+                <div class="grid-3">
+                    <div class="card">
+                        <h3>免费版</h3>
+                        <div style="font-size:2.5rem; font-weight:700;">¥0 <small style="font-size:1rem; color:#718096;">/永久</small></div>
+                        <ul style="list-style:none; margin:20px 0; color:#3E5A70;">
+                            <li><i class="fas fa-check" style="color:#F4A261; margin-right:8px;"></i> 基础风险查询（每月5次）</li>
+                            <li><i class="fas fa-check" style="color:#F4A261; margin-right:8px;"></i> 每周行业简报</li>
+                            <li><i class="fas fa-check" style="color:#F4A261; margin-right:8px;"></i> 国别数据库（限前3条）</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width:100%;" onclick="alert('当前使用免费版')">当前使用</button>
+                    </div>
+                    <div class="card" style="border:2px solid #F4A261; transform:scale(1.02);">
+                        <h3>专业会员 <span style="background:#F4A261; padding:2px 12px; border-radius:40px; font-size:0.8rem;">推荐</span></h3>
+                        <div style="font-size:2.5rem; font-weight:700;">¥49 <small style="font-size:1rem; color:#718096;">/月</small></div>
+                        <ul style="list-style:none; margin:20px 0; color:#3E5A70;">
+                            <li><i class="fas fa-check" style="color:#F4A261; margin-right:8px;"></i> AI风险检测无限次</li>
+                            <li><i class="fas fa-check" style="color:#F4A261; margin-right:8px;"></i> 定制化风控报告</li>
+                            <li><i class="fas fa-check" style="color:#F4A261; margin-right:8px;"></i> 优先技术支持</li>
+                        </ul>
+                        <button class="btn btn-primary" style="width:100%;" onclick="upgradeMembership('pro')">立即订阅</button>
+                    </div>
+                    <div class="card">
+                        <h3>企业版</h3>
+                        <div style="font-size:2.5rem; font-weight:700;">联系销售</div>
+                        <ul style="list-style:none; margin:20px 0; color:#3E5A70;">
+                            <li><i class="fas fa-check" style="color:#F4A261; margin-right:8px;"></i> 专属大客户经理</li>
+                            <li><i class="fas fa-check" style="color:#F4A261; margin-right:8px;"></i> 开放API接口</li>
+                            <li><i class="fas fa-check" style="color:#F4A261; margin-right:8px;"></i> 私有化部署</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width:100%;" onclick="alert('请联系销售团队：sales@siluerstack.com')">咨询</button>
+                    </div>
+                </div>
+                <!-- 报告生成按钮（登录后可见） -->
+                <div id="report-button-container" style="text-align:center; margin-top:30px; display:none;">
+                    <button class="btn btn-outline" onclick="generateReport()"><i class="fas fa-file-pdf"></i> 生成我的合规报告</button>
+                </div>
+            </div>
+
+            <!-- 最新资源与洞察 -->
+            <div id="resources-section" style="margin: 80px 0;">
+                <h2>最新资源 · 避坑指南</h2>
+                <div class="resources-wrapper">
+                    <div class="articles-grid">
+                        <div class="article-card">
+                            <h3>印尼化妆品标签新规深度解读</h3>
+                            <p>重点解析成分标注与进口备案流程，助您快速合规。</p>
+                            <span class="article-link" onclick="toggleArticleDetail(this)">点击查看详情 <i class="fas fa-chevron-down"></i></span>
+                            <div class="article-detail">
+                                <p><strong>法规背景：</strong>BPOM自2025年3月起强制要求电子标签，在线备案。</p>
+                                <p><strong>合规建议：</strong>与印尼本地代理合作，提前设计标签。</p>
+                            </div>
+                        </div>
+                        <div class="article-card">
+                            <h3>沙特斋月营销广告避雷清单</h3>
+                            <p>文化禁忌与广告法红线梳理，规避营销风险。</p>
+                            <span class="article-link" onclick="toggleArticleDetail(this)">点击查看详情 <i class="fas fa-chevron-down"></i></span>
+                            <div class="article-detail">
+                                <p><strong>文化禁忌：</strong>日间禁止食品广告，避免宗教符号。</p>
+                                <p><strong>合规建议：</strong>投放集中在日落后，内容聚焦家庭。</p>
+                            </div>
+                        </div>
+                        <div class="article-card">
+                            <h3>欧盟CE认证常见误区解析</h3>
+                            <p>从测试标准到公告号机构选择，专家手把手教学。</p>
+                            <span class="article-link" onclick="toggleArticleDetail(this)">点击查看详情 <i class="fas fa-chevron-down"></i></span>
+                            <div class="article-detail">
+                                <p><strong>误区：</strong>高风险产品必须公告机构认证。</p>
+                                <p><strong>建议：</strong>聘请专业咨询，保留技术文档。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wechat-card">
+                        <div class="wechat-icon"><i class="fab fa-weixin"></i></div>
+                        <h3>关注公众号 · 领合规手册</h3>
+                        <div class="wechat-sub">一手资讯 · 专家解读</div>
+                        <div class="qr-placeholder">
+                            <img src="qrcode.jpg" alt="公众号二维码">
+                        </div>
+                        <div class="wechat-offer">关注即送《三国合规速查手册》</div>
+                        <div class="wechat-desc">
+                            丝路e栈公众号持续发布原创推文，深度解析各国合规风险，助您品牌安全出海。
+                        </div>
+                        <div class="badge-counter">
+                            <i class="fas fa-pen-fancy"></i> 丝路e栈 · 让中国品牌安全出海
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div>© 2025 丝路e栈 让中国品牌安全出海</div>
+                <div style="display: flex; gap: 40px;">
+                    <div><a style="color:#5A6B7A; text-decoration: none;">核心产品</a></div>
+                    <div><a style="color:#5A6B7A; text-decoration: none;">学习资源</a></div>
+                    <div><a style="color:#5A6B7A; text-decoration: none;">关于我们</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第二页：流程选择 -->
+        <div id="process-page" class="page">
+            <h1>请选择您关心的业务环节</h1>
+            <p class="process-subtitle" style="color:#5A6B7A;">我们将针对该环节，为您分析目标市场的具体风险。</p>
+            <div class="process-grid">
+                <div class="process-card" onclick="selectProcessAndGo(this, '商品上架与禁售风险')">
+                    <div style="font-size:3rem;">📦</div>
+                    <h3>商品上架与禁售</h3>
+                    <p>产品准入、认证、标签、文化禁忌</p>
+                </div>
+                <div class="process-card" onclick="selectProcessAndGo(this, '营销与广告合规风险')">
+                    <div style="font-size:3rem;">📢</div>
+                    <h3>营销与广告合规</h3>
+                    <p>广告法、宗教敏感、促销规则</p>
+                </div>
+                <div class="process-card" onclick="selectProcessAndGo(this, '客户与交易履行风险')">
+                    <div style="font-size:3rem;">🤝</div>
+                    <h3>客户与交易履行</h3>
+                    <p>消费者权益、支付、物流</p>
+                </div>
+                <div class="process-card" onclick="selectProcessAndGo(this, '数据与隐私合规风险')">
+                    <div style="font-size:3rem;">🔐</div>
+                    <h3>数据与隐私合规</h3>
+                    <p>GDPR、数据跨境</p>
+                </div>
+                <div class="process-card" onclick="selectProcessAndGo(this, '知识产权与税务风险')">
+                    <div style="font-size:3rem;">⚖️</div>
+                    <h3>知识产权与税务</h3>
+                    <p>商标专利、VAT合规</p>
+                </div>
+            </div>
+            <div style="display:flex; gap:20px; margin-top:40px;">
+                <button class="btn btn-secondary" onclick="showPage('intro-page')">← 返回首页</button>
+                <button class="btn btn-primary" id="nextToQueryBtn" onclick="goToQueryPage()" disabled>下一步：选择国家 →</button>
             </div>
         </div>
 
         <!-- 第三页：查询与结果页 -->
         <div id="query-page" class="page">
-            <h1>风险详情查询</h1>
-            <div class="selection-summary">
-                <p>当前评估环节：<span id="current-process-span">未选择</span></p>
-                <p>请选择目标市场以获取具体的合规风险清单：</p>
+            <div class="query-header">
+                <h1>风险详情查询</h1>
+                <p>根据您的业务环节，精准定位目标市场的合规风险</p>
             </div>
-            <div class="control-panel">
-                <label for="country-select"><strong>选择目标国家：</strong></label>
-                <select id="country-select">
-                    <option value="">-- 请选择 --</option>
-                    <option value="印度尼西亚">印度尼西亚</option>
-                    <option value="沙特阿拉伯">沙特阿拉伯</option>
-                    <option value="波兰">波兰</option>
-                    <option value="欧盟">欧盟（通用）</option>
-                </select>
-                <button class="btn" id="search-btn" onclick="loadAndFilterData()" disabled>🔍 查询风险</button>
-                <button class="btn btn-secondary" onclick="showPage('process-page')">← 重新选择环节</button>
+
+            <div class="process-badge">
+                <i class="fas fa-clipboard-check"></i>
+                <span>当前评估环节</span>
+                <strong id="current-process-span">未选择</strong>
             </div>
-            <div id="results-container">
-                <div class="loading" id="loading" style="display:none;">正在加载风险数据库...</div>
+
+            <div class="query-control-card">
+                <div class="query-row">
+                    <div class="query-field">
+                        <label><i class="fas fa-globe-asia" style="margin-right:8px; color:#F4A261;"></i>目标国家</label>
+                        <select id="country-select">
+                            <option value="">-- 请选择 --</option>
+                            <option value="印度尼西亚">印度尼西亚</option>
+                            <option value="沙特阿拉伯">沙特阿拉伯</option>
+                            <option value="波兰">波兰</option>
+                            <option value="欧盟">欧盟（通用）</option>
+                        </select>
+                    </div>
+                    <div class="query-actions">
+                        <button class="btn btn-primary" id="search-btn" onclick="loadAndFilterData()" disabled><i class="fas fa-search"></i> 查询风险</button>
+                        <button class="btn btn-secondary" onclick="showPage('process-page')"><i class="fas fa-undo-alt"></i> 重新选择环节</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="results-container" style="margin-top: 32px;">
+                <div class="loading" id="loading" style="display:none; text-align:center; padding:40px;">正在加载风险数据库...</div>
                 <div id="results"></div>
+            </div>
+        </div>
+
+        <!-- 第四页：国别数据库 -->
+        <div id="database-page" class="page">
+            <h1>国别风险数据库</h1>
+            <div class="database-layout">
+                <div class="filter-sidebar">
+                    <div class="filter-group">
+                        <label>关键词搜索</label>
+                        <input type="text" id="db-search" placeholder="输入关键词..." oninput="filterDatabase()">
+                    </div>
+                    <div class="filter-group">
+                        <label>目标国家</label>
+                        <select id="db-country" onchange="filterDatabase()">
+                            <option value="">全部国家</option>
+                            <option value="印度尼西亚">印度尼西亚</option>
+                            <option value="沙特阿拉伯">沙特阿拉伯</option>
+                            <option value="波兰">波兰</option>
+                            <option value="欧盟">欧盟</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>业务流程</label>
+                        <select id="db-process" onchange="filterDatabase()">
+                            <option value="">全部流程</option>
+                            <option value="商品上架与禁售风险">商品上架与禁售</option>
+                            <option value="营销与广告合规风险">营销与广告</option>
+                            <option value="客户与交易履行风险">客户与交易</option>
+                            <option value="数据与隐私合规风险">数据与隐私</option>
+                            <option value="知识产权与税务风险">知识产权与税务</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>风险类型</label>
+                        <select id="db-type" onchange="filterDatabase()">
+                            <option value="">全部类型</option>
+                            <option value="法律法规">法律法规</option>
+                            <option value="宗教文化禁忌">宗教文化禁忌</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-outline" style="width:100%;" onclick="resetDatabaseFilters()">重置筛选</button>
+                </div>
+                <div class="database-results" id="database-results">
+                    <div style="text-align:center; padding:40px;">加载数据中...</div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- 视频演示模态框 -->
+    <div id="video-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px; padding: 20px;">
+            <span class="modal-close" onclick="closeVideoModal()">&times;</span>
+            <h3 style="margin-bottom: 20px;">产品演示视频</h3>
+            <video id="demo-video" controls width="100%" style="border-radius: 20px;">
+                <source src="demo.mp4" type="video/mp4">
+                您的浏览器不支持 HTML5 视频，请升级浏览器或<a href="demo.mp4">点击下载</a>观看。
+            </video>
+        </div>
+    </div>
+
+    <!-- 报告预览模态框（增强版） -->
+    <div id="report-modal" class="modal">
+        <div class="modal-content" style="max-width: 700px; padding: 30px;">
+            <span class="modal-close" onclick="closeReportModal()">&times;</span>
+            <h2 style="margin-bottom:20px;">📊 您的个性化合规报告</h2>
+            <div id="report-content" style="max-height: 400px; overflow-y: auto; background: #f8f9fa; padding: 20px; border-radius: 16px; margin-bottom: 20px; text-align: left;"></div>
+            <button class="btn btn-primary" onclick="window.print()"><i class="fas fa-print"></i> 打印/保存为PDF</button>
+        </div>
+    </div>
+
+    <!-- 引入数据文件 -->
     <script src="all-risk-data.js"></script>
-
     <script>
-        // 状态变量
-        let currentProcess = '';
-        let allData = [];
+        (function() {
+            // ---------- 全局变量 ----------
+            let currentProcess = '';
+            let allData = [];
 
-        // ==============================
-        // 1. 页面导航函数
-        // ==============================
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            window.scrollTo(0, 0);
-        }
-
-        // ==============================
-        // 2. 流程选择逻辑
-        // ==============================
-        function selectProcess(cardElement, process) {
-            // 更新UI
-            document.querySelectorAll('.process-card').forEach(c => c.classList.remove('selected'));
-            cardElement.classList.add('selected');
-            // 更新状态并启用按钮
-            currentProcess = process;
-            document.getElementById('nextToQueryBtn').disabled = false;
-        }
-
-        function goToQueryPage() {
-            if (!currentProcess) return;
-            // 更新第三页的摘要
-            document.getElementById('current-process-span').textContent = currentProcess;
-            // 清空上一轮结果
-            document.getElementById('results').innerHTML = '';
-            document.getElementById('country-select').selectedIndex = 0;
-            document.getElementById('search-btn').disabled = true;
-            // 显示第三页
-            showPage('query-page');
-        }
-
-        // ==============================
-        // 3. 数据加载与查询逻辑
-        // ==============================
-        // !!! 重要：请将这里的文件名改为您自己的CSV文件路径 !!!
-        const DATA_URL = 'all-risk-data.csv'
-
-        // 监听国家选择变化
-        document.getElementById('country-select').addEventListener('change', function() {
-            document.getElementById('search-btn').disabled = !this.value;
-        });
-
-        async function loadAndFilterData() {
-            const country = document.getElementById('country-select').value;
-            const resultsDiv = document.getElementById('results');
-            const loadingDiv = document.getElementById('loading');
-
-            if (!currentProcess || !country) {
-                alert('请先完成流程和国家选择。');
-                return;
+            if (window.ALL_RISK_DATA && Array.isArray(window.ALL_RISK_DATA)) {
+                allData = window.ALL_RISK_DATA;
+            } else {
+                console.warn('未找到 window.ALL_RISK_DATA，使用后备数据');
+                allData = [
+                    {业务流程:"商品上架与禁售风险",目标国家:"印度尼西亚",风险类型:"宗教文化禁忌",风险分类:"印度尼西亚",风险要点:"清真认证缺失",风险描述:"未获得MUI清真认证",法规依据:"Halal Product Assurance Law",可能后果:"商品下架、罚款",应对建议:"申请清真认证"},
+                    {业务流程:"营销与广告合规风险",目标国家:"沙特阿拉伯",风险类型:"宗教文化禁忌",风险分类:"沙特阿拉伯",风险要点:"宗教敏感词",风险描述:"广告中出现猪或酒",法规依据:"Advertising Law",可能后果:"高额罚款",应对建议:"避免动物形象"},
+                ];
             }
 
-            // 显示加载
-            resultsDiv.innerHTML = '';
-            loadingDiv.style.display = 'block';
+            // ========== 获取用户信息（支持游客） ==========
+            function getUserInfo() {
+                const userStr = localStorage.getItem('user');
+                if (userStr) {
+                    try {
+                        const user = JSON.parse(userStr);
+                        let needUpdate = false;
+                        if (!user.membership) { user.membership = 'free'; needUpdate = true; }
+                        if (user.queryCount === undefined) { user.queryCount = 0; needUpdate = true; }
+                        if (needUpdate) localStorage.setItem('user', JSON.stringify(user));
+                        return user;
+                    } catch { return null; }
+                }
 
-            try {
-                // 首次访问时加载数据
-                if (allData.length === 0) {
-                    // 优先从本地脚本 all-risk-data.js 读取（支持 file:// 直接双击打开）
-                    if (window.ALL_RISK_DATA && Array.isArray(window.ALL_RISK_DATA) && window.ALL_RISK_DATA.length) {
-                        allData = window.ALL_RISK_DATA;
-                    } else {
-                        const response = await fetch(DATA_URL);
+                let guest = localStorage.getItem('guest');
+                if (guest) {
+                    try {
+                        guest = JSON.parse(guest);
+                        if (!guest.membership) guest.membership = 'free';
+                        if (guest.queryCount === undefined) guest.queryCount = 0;
+                        return guest;
+                    } catch { /* 损坏则重新创建 */ }
+                }
+                guest = { membership: 'free', queryCount: 0, isGuest: true };
+                localStorage.setItem('guest', JSON.stringify(guest));
+                return guest;
+            }
 
-                    if (!response.ok) throw new Error(`无法加载数据文件，请检查文件路径和名称：${DATA_URL}`);
-                    const csvText = await response.text();
-                    allData = parseCSV(csvText);
+            // ========== 记录查询历史 ==========
+            function addQueryHistory(process, country) {
+                const user = getUserInfo();
+                if (user.isGuest) return; // 游客不记录历史（可选，也可记录）
+                const history = JSON.parse(localStorage.getItem('queryHistory') || '[]');
+                history.push({
+                    process,
+                    country,
+                    time: new Date().toLocaleString()
+                });
+                // 保留最近50条
+                if (history.length > 50) history.shift();
+                localStorage.setItem('queryHistory', JSON.stringify(history));
+            }
+
+            // ========== 更新登录UI ==========
+            function updateAuthUI(username) {
+                const greeting = document.getElementById('user-greeting');
+                const loginBtn = document.querySelector('.auth-buttons .btn-outline');
+                const registerBtn = document.querySelector('.auth-buttons .btn-primary');
+                if (greeting) {
+                    greeting.innerHTML = `欢迎，${username} <button onclick="logout()" style="background:none; border:none; color:#E76F51; cursor:pointer; font-weight:600;">退出</button>`;
+                    greeting.style.display = 'inline-flex';
+                }
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (registerBtn) registerBtn.style.display = 'none';
+                document.getElementById('report-button-container').style.display = 'block';
+            }
+
+            window.logout = function() {
+                localStorage.removeItem('user');
+                localStorage.removeItem('guest');
+                location.reload();
+            };
+
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+
+            window.openLoginModal = function() {
+                modalBody.innerHTML = `
+                    <h2 style="margin-bottom:20px;">登录</h2>
+                    <input type="text" id="login-user" placeholder="用户名" autocomplete="off">
+                    <input type="password" id="login-pwd" placeholder="密码">
+                    <button class="btn btn-primary" style="width:100%;" onclick="simulateLogin()">登录</button>
+                `;
+                modal.classList.add('active');
+            };
+
+            window.openRegisterModal = function() {
+                modalBody.innerHTML = `
+                    <h2 style="margin-bottom:20px;">注册</h2>
+                    <input type="text" id="reg-user" placeholder="用户名">
+                    <input type="email" id="reg-email" placeholder="邮箱">
+                    <input type="password" id="reg-pwd" placeholder="密码">
+                    <button class="btn btn-primary" style="width:100%;" onclick="simulateRegister()">注册</button>
+                `;
+                modal.classList.add('active');
+            };
+
+            window.closeModal = function() { modal.classList.remove('active'); };
+
+            window.simulateLogin = function() {
+                const username = document.getElementById('login-user')?.value.trim();
+                if (!username) { alert('请输入用户名'); return; }
+                localStorage.removeItem('guest');
+                localStorage.setItem('user', JSON.stringify({ 
+                    username, 
+                    membership: 'free',
+                    queryCount: 0
+                }));
+                updateAuthUI(username);
+                closeModal();
+                location.reload();
+            };
+
+            window.simulateRegister = function() {
+                const username = document.getElementById('reg-user')?.value.trim();
+                if (!username) { alert('请输入用户名'); return; }
+                localStorage.removeItem('guest');
+                localStorage.setItem('user', JSON.stringify({ 
+                    username, 
+                    membership: 'free',
+                    queryCount: 0
+                }));
+                updateAuthUI(username);
+                closeModal();
+                location.reload();
+            };
+
+            function checkLogin() {
+                const user = getUserInfo();
+                if (user && !user.isGuest) {
+                    updateAuthUI(user.username);
+                } else {
+                    document.getElementById('report-button-container').style.display = 'none';
+                }
+            }
+            checkLogin();
+
+            window.upgradeMembership = function(level) {
+                const user = getUserInfo();
+                if (!user) { alert('请先登录'); openLoginModal(); return; }
+                if (user.isGuest) { alert('请先登录后升级会员'); openLoginModal(); return; }
+                if (level === 'pro') {
+                    if (confirm(`确认升级为专业会员？(模拟支付，实际不会扣费)`)) {
+                        user.membership = 'pro';
+                        user.queryCount = 0;
+                        localStorage.setItem('user', JSON.stringify(user));
+                        alert('升级成功！感谢支持');
+                        location.reload();
+                    }
+                } else if (level === 'enterprise') {
+                    alert('企业版请联系销售：sales@siluerstack.com');
+                }
+            };
+
+            window.showPage = function(pageId) {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+                window.scrollTo(0, 0);
+                if (pageId === 'database-page') renderDatabaseCards(allData);
+            };
+
+            window.goToSection = function(sectionId) {
+                showPage('intro-page');
+                setTimeout(() => {
+                    const element = document.getElementById(sectionId);
+                    if (element) element.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            };
+
+            window.selectProcess = function(cardElement, process) {
+                document.querySelectorAll('.process-card').forEach(c => c.classList.remove('selected'));
+                cardElement.classList.add('selected');
+                currentProcess = process;
+                document.getElementById('nextToQueryBtn').disabled = false;
+            };
+
+            window.selectProcessAndGo = function(cardElement, process) {
+                document.querySelectorAll('.process-card').forEach(c => c.classList.remove('selected'));
+                cardElement.classList.add('selected');
+                currentProcess = process;
+                document.getElementById('current-process-span').textContent = currentProcess;
+                document.getElementById('results').innerHTML = '';
+                document.getElementById('country-select').selectedIndex = 0;
+                document.getElementById('search-btn').disabled = true;
+                showPage('query-page');
+            };
+
+            window.goToQueryPage = function() {
+                if (!currentProcess) return;
+                document.getElementById('current-process-span').textContent = currentProcess;
+                document.getElementById('results').innerHTML = '';
+                document.getElementById('country-select').selectedIndex = 0;
+                document.getElementById('search-btn').disabled = true;
+                showPage('query-page');
+            };
+
+            document.getElementById('country-select')?.addEventListener('change', function() {
+                document.getElementById('search-btn').disabled = !this.value;
+            });
+
+            // ========== 风险查询 ==========
+            window.loadAndFilterData = function() {
+                const country = document.getElementById('country-select').value;
+                const resultsDiv = document.getElementById('results');
+                const loadingDiv = document.getElementById('loading');
+                if (!currentProcess || !country) { alert('请完成选择'); return; }
+
+                const user = getUserInfo();
+                const isFree = user.membership === 'free';
+
+                if (isFree && user.queryCount >= 5) {
+                    alert('免费用户每月仅可查询5次，请升级为专业会员继续使用。');
+                    return;
+                }
+
+                resultsDiv.innerHTML = '';
+                loadingDiv.style.display = 'block';
+                setTimeout(() => {
+                    const filtered = allData.filter(row => row.业务流程 === currentProcess && row.目标国家 === country);
+                    
+                    if (isFree) {
+                        user.queryCount++;
+                        if (user.isGuest) {
+                            localStorage.setItem('guest', JSON.stringify(user));
+                        } else {
+                            localStorage.setItem('user', JSON.stringify(user));
+                        }
+                    }
+
+                    // 记录查询历史（仅登录用户）
+                    if (!user.isGuest) {
+                        addQueryHistory(currentProcess, country);
+                    }
+
+                    displayResults(filtered);
+                    loadingDiv.style.display = 'none';
+                }, 100);
+            };
+
+            // ---------- 分页相关 ----------
+            let __pagedResults = [], __pagedPage = 1, __pagedCountry = '';
+            const __pagedPageSize = 5;
+            window.__norm = function(v) {
+                if (v === null || v === undefined) return "";
+                if (typeof v === "number" && Number.isNaN(v)) return "";
+                return String(v).replace(/\u00A0/g, " ").trim();
+            };
+
+            window.__renderOne = function(item) {
+                const title = __norm(item["风险要点"]) || __norm(item["风险分类"]) || "风险提示";
+                const desc = __norm(item["风险描述"]);
+                const law = __norm(item["法规依据"]);
+                const consequence = __norm(item["可能后果"]);
+                const advice = __norm(item["应对建议"]);
+
+                const user = getUserInfo();
+                const canConsult = user && user.membership === 'pro';
+                const consultButton = canConsult 
+                    ? `<button class="btn btn-outline btn-sm" onclick='consultDeepSeek(${JSON.stringify(item).replace(/'/g, "\\'")})'>🤖 咨询DeepSeek</button>`
+                    : `<p style="color:#718096; font-size:0.9rem; margin-top:8px;">升级会员可使用AI深度咨询</p>`;
+
+                return `
+                    <div class="risk-item">
+                        <strong>${title}</strong>
+                        <p><i class="fas fa-align-left"></i> <span><strong>风险描述:</strong> ${desc || "暂无"}</span></p>
+                        <p><i class="fas fa-gavel"></i> <span><strong>法规/禁忌依据:</strong> ${law || "暂无"}</span></p>
+                        <p><i class="fas fa-exclamation-triangle"></i> <span><strong>可能后果:</strong> ${consequence || "暂无"}</span></p>
+                        <p><i class="fas fa-lightbulb"></i> <span><strong>应对建议:</strong> ${advice || "暂无"}</span></p>
+                        <div style="margin-top:16px;">
+                            ${consultButton}
+                        </div>
+                    </div>
+                `;
+            };
+
+            window.__renderPager = function() {
+                const total = __pagedResults.length;
+                const totalPages = Math.max(1, Math.ceil(total / __pagedPageSize));
+                if (totalPages <= 1) return "";
+                const prevDisabled = (__pagedPage <= 1) ? "disabled" : "";
+                const nextDisabled = (__pagedPage >= totalPages) ? "disabled" : "";
+                return `
+                    <div class="result-pager">
+                        <button class="pager-btn" onclick="prevResultPage()" ${prevDisabled}>上一页</button>
+                        <span class="pager-info">第 ${__pagedPage} / ${totalPages} 页 · 共${total}条</span>
+                        <button class="pager-btn" onclick="nextResultPage()" ${nextDisabled}>下一页</button>
+                    </div>
+                `;
+            };
+
+            window.__renderResultsPage = function() {
+                const resultsDiv = document.getElementById("results");
+                if (!__pagedResults || __pagedResults.length === 0) {
+                    resultsDiv.innerHTML = `<h3 style="color:#e76f51;">未找到匹配结果</h3><p>请尝试选择其他国家或重新选择评估环节。</p>`;
+                    return;
+                }
+                const total = __pagedResults.length;
+                const totalPages = Math.max(1, Math.ceil(total / __pagedPageSize));
+                const page = Math.min(Math.max(1, __pagedPage), totalPages);
+                __pagedPage = page;
+                const start = (page - 1) * __pagedPageSize;
+                const end = Math.min(start + __pagedPageSize, total);
+                const pageItems = __pagedResults.slice(start, end);
+                const header = `<h3>📊 查询结果： ${currentProcess}（${__pagedCountry}）</h3><p>共发现 <strong>${total}</strong> 条风险提示：</p>`;
+                const cards = pageItems.map(__renderOne).join("");
+                resultsDiv.innerHTML = header + __renderPager() + cards + __renderPager();
+            };
+
+            window.prevResultPage = function() { if(__pagedPage>1){__pagedPage--;__renderResultsPage();}};
+            window.nextResultPage = function() { const totalPages=Math.ceil((__pagedResults?.length||0)/__pagedPageSize); if(__pagedPage<totalPages){__pagedPage++;__renderResultsPage();}};
+            window.displayResults = function(data) {
+                __pagedResults = data; __pagedPage = 1; __pagedCountry = document.getElementById('country-select').value;
+                __renderResultsPage();
+            };
+
+            // ========== AI咨询（增强版，包含国家流程） ==========
+            window.consultDeepSeek = function(item) {
+                const title = item.风险要点 || '风险提示';
+                const desc = item.风险描述 || '';
+                const law = item.法规依据 || '';
+                const consequence = item.可能后果 || '';
+                const advice = item.应对建议 || '';
+                const country = item.目标国家 || '未知国家';
+                const process = item.业务流程 || '未知流程';
+
+                const question = `请分析以下针对【${country}】的【${process}】合规风险：
+【风险要点】${title}
+【风险描述】${desc}
+【法规/禁忌依据】${law}
+【可能后果】${consequence}
+【现有建议】${advice}
+
+请提供更详细的背景解释、针对该国家/场景的合规建议及注意事项。`;
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(question).then(() => {
+                        alert('问题已复制到剪贴板，即将打开DeepSeek官网，请粘贴提问。');
+                        window.open('https://chat.deepseek.com/', '_blank');
+                    }).catch(() => {
+                        prompt('复制失败，请手动复制以下问题，然后打开DeepSeek官网：', question);
+                        window.open('https://chat.deepseek.com/', '_blank');
+                    });
+                } else {
+                    prompt('请复制以下问题，然后打开DeepSeek官网：', question);
+                    window.open('https://chat.deepseek.com/', '_blank');
+                }
+            };
+
+            // ========== AI检测模拟 ==========
+            document.addEventListener('DOMContentLoaded', function() {
+                const detectBtn = document.getElementById('ai-detect-btn');
+                if (detectBtn) {
+                    detectBtn.addEventListener('click', function() {
+                        const input = document.getElementById('ai-input').value.trim();
+                        const resultDiv = document.getElementById('ai-result');
+                        if (!input) {
+                            resultDiv.innerHTML = '<p>请输入商品标题或描述</p>';
+                            return;
+                        }
+                        const lowerInput = input.toLowerCase();
+                        let matched = null;
+                        if (allData && allData.length) {
+                            matched = allData.find(item => {
+                                const title = (item.风险要点 || '').toLowerCase();
+                                const desc = (item.风险描述 || '').toLowerCase();
+                                return title.includes(lowerInput) || desc.includes(lowerInput);
+                            });
+                        }
+                        if (matched) {
+                            resultDiv.innerHTML = `
+                                <p>⚠️ 检测到潜在风险：<strong>${matched.风险要点}</strong></p>
+                                <p>📌 风险描述：${matched.风险描述}</p>
+                                <p>💡 应对建议：${matched.应对建议}</p>
+                                <p style="margin-top:12px;">
+                                    <button class="btn btn-outline btn-sm" onclick='consultDeepSeek(${JSON.stringify(matched).replace(/'/g, "\\'")})'>
+                                        🤖 咨询DeepSeek 获取详细建议
+                                    </button>
+                                </p>
+                            `;
+                        } else {
+                            resultDiv.innerHTML = '<p>✅ 未发现明显风险。您可以尝试咨询DeepSeek获取更详细分析。</p>';
+                        }
+                    });
+                }
+            });
+
+            window.toggleArticleDetail = function(linkElement) {
+                const card = linkElement.closest('.article-card');
+                const detail = card.querySelector('.article-detail');
+                const isActive = detail.classList.contains('active');
+                document.querySelectorAll('.article-detail').forEach(d => d.classList.remove('active'));
+                document.querySelectorAll('.article-link i').forEach(i => i.className = 'fas fa-chevron-down');
+                if (!isActive) {
+                    detail.classList.add('active');
+                    linkElement.querySelector('i').className = 'fas fa-chevron-up';
+                } else {
+                    linkElement.querySelector('i').className = 'fas fa-chevron-down';
+                }
+            };
+
+            // ========== 国别数据库筛选 ==========
+            window.filterDatabase = function() {
+                const keyword = document.getElementById('db-search').value.trim().toLowerCase();
+                const country = document.getElementById('db-country').value;
+                const process = document.getElementById('db-process').value;
+                const type = document.getElementById('db-type').value;
+                let filtered = allData.filter(item => {
+                    if (country && item.目标国家 !== country) return false;
+                    if (process && item.业务流程 !== process) return false;
+                    if (type) {
+                        if (type === '法律法规' && !(item.风险类型 && item.风险类型.includes('法律法规'))) return false;
+                        if (type === '宗教文化禁忌' && !(item.风险类型 && item.风险类型.includes('宗教'))) return false;
+                    }
+                    if (keyword) {
+                        const fields = [item.风险要点, item.风险描述, item.法规依据, item.应对建议].map(f => (f || '').toLowerCase());
+                        if (!fields.some(f => f.includes(keyword))) return false;
+                    }
+                    return true;
+                });
+                renderDatabaseCards(filtered);
+            };
+
+            window.resetDatabaseFilters = function() {
+                document.getElementById('db-search').value = '';
+                document.getElementById('db-country').value = '';
+                document.getElementById('db-process').value = '';
+                document.getElementById('db-type').value = '';
+                renderDatabaseCards(allData);
+            };
+
+            function renderDatabaseCards(data) {
+                const container = document.getElementById('database-results');
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:40px;">暂无匹配风险条目</div>';
+                    return;
+                }
+
+                const user = getUserInfo();
+                const isFree = user.membership === 'free';
+                let displayData = data;
+                let limitMessage = '';
+
+                if (isFree) {
+                    displayData = data.slice(0, 3);
+                    if (data.length > 3) {
+                        limitMessage = `<p style="color:#E76F51; text-align:center; margin-top:20px;">免费用户仅显示前3条，升级专业会员查看全部 ${data.length} 条风险</p>`;
                     }
                 }
 
-                // 过滤数据
-                const filtered = allData.filter(row =>
-                    row.业务流程 === currentProcess && row.目标国家 === country
-                );
-
-                // 显示结果
-                displayResults(filtered);
-
-            } catch (error) {
-                console.error('查询失败:', error);
-                resultsDiv.innerHTML = `<div class="error">
-                    <p>❌ 数据加载或查询失败。</p>
-                    <p><strong>可能原因：</strong></p>
-                    <ul>
-                        <li>1. 数据文件 <code>${DATA_URL}</code> 不存在或路径错误。</li>
-                        <li>2. 文件未与网页放在同一文件夹。</li>
-                        <li>3. 文件内容格式有误（请确保为UTF-8编码的CSV）。</li>
-                    </ul>
-                    <p>请检查并刷新页面重试。</p>
-                </div>`;
-            } finally {
-                loadingDiv.style.display = 'none';
-            }
-        }
-
-        // CSV解析函数（与之前相同，确保兼容）
-        function parseCSV(text) {
-            const lines = text.split('\n').filter(line => line.trim() !== '');
-            if (lines.length < 2) return [];
-            const headers = lines[0].split(',').map(h => h.trim());
-            return lines.slice(1).map(line => {
-                const values = line.split(',').map(v => v.trim());
-                let obj = {};
-                headers.forEach((header, index) => {
-                    obj[header] = values[index] || '';
+                let html = '';
+                displayData.forEach(item => {
+                    html += `
+                        <div class="database-card">
+                            <h4>${item.风险要点 || '未命名风险'}</h4>
+                            <p><strong>国家：</strong>${item.目标国家 || '未知'}</p>
+                            <p><strong>流程：</strong>${item.业务流程 || '未知'}</p>
+                            <p><strong>风险描述：</strong>${item.风险描述 || '无'}</p>
+                            <p><strong>应对建议：</strong>${item.应对建议 || '无'}</p>
+                            <div class="meta">
+                                <span>⚖️ ${item.法规依据 || '无'}</span>
+                                <span>🚨 ${item.可能后果 || '无'}</span>
+                            </div>
+                            ${!isFree ? `<button class="btn btn-outline btn-sm" style="margin-top:12px;" onclick='consultDeepSeek(${JSON.stringify(item).replace(/'/g, "\\'")})'>🤖 咨询DeepSeek</button>` : ''}
+                        </div>
+                    `;
                 });
-                return obj;
-            });
-        }
+                html += limitMessage;
+                container.innerHTML = html;
+            }
 
-        // 结果展示函数
-        // =========================
-// 查询结果：分页展示（每页5条，只改结果区，不动其它页面）
-// =========================
-let __pagedResults = [];
-let __pagedPage = 1;
-let __pagedCountry = "";
-const __pagedPageSize = 5;
+            // ========== 生成个性化合规报告（增强版） ==========
+            window.generateReport = function() {
+                const user = getUserInfo();
+                if (!user || user.isGuest) {
+                    alert('请先登录后查看报告');
+                    openLoginModal();
+                    return;
+                }
 
-function __norm(v) {
-    if (v === null || v === undefined) return "";
-    // 处理 all-risk-data.js 里可能出现的 NaN
-    if (typeof v === "number" && Number.isNaN(v)) return "";
-    return String(v).replace(/\u00A0/g, " ").trim();
-}
+                const history = JSON.parse(localStorage.getItem('queryHistory') || '[]');
+                const totalQueries = user.queryCount;
+                
+                // 按国家统计
+                const countryStats = {};
+                const processStats = {};
+                history.forEach(item => {
+                    countryStats[item.country] = (countryStats[item.country] || 0) + 1;
+                    processStats[item.process] = (processStats[item.process] || 0) + 1;
+                });
 
-function __renderOne(item) {
-    const title = __norm(item["风险要点"]) || __norm(item["风险分类"]) || "风险提示";
-    const desc = __norm(item["风险描述"]);
-    const law = __norm(item["法规依据"]);
-    const consequence = __norm(item["可能后果"]);
-    const advice = __norm(item["应对建议"]);
+                const countryRows = Object.entries(countryStats).map(([c, cnt]) => `<li>${c}：${cnt}次</li>`).join('');
+                const processRows = Object.entries(processStats).map(([p, cnt]) => `<li>${p}：${cnt}次</li>`).join('');
 
-    return `
-        <div class="risk-item">
-            <strong>${title}</strong>
-            <p><strong>📌 风险描述:</strong> ${desc || "暂无"}</p>
-            <p><strong>⚖️ 法规/禁忌依据:</strong> ${law || "暂无"}</p>
-            <p><strong>🚨 可能后果:</strong> <span class="highlight">${consequence || "暂无"}</span></p>
-            <p><strong>💡 应对建议:</strong> ${advice || "暂无"}</p>
-        </div>
-    `;
-}
+                const recent = history.slice(-5).reverse().map(item => 
+                    `<li>${item.time} - ${item.country} · ${item.process}</li>`
+                ).join('');
 
-function __renderPager() {
-    const total = __pagedResults.length;
-    const totalPages = Math.max(1, Math.ceil(total / __pagedPageSize));
-    const page = Math.min(Math.max(1, __pagedPage), totalPages);
-    const start = (page - 1) * __pagedPageSize;
-    const end = Math.min(start + __pagedPageSize, total);
+                const reportHTML = `
+                    <h3>📅 报告生成时间：${new Date().toLocaleString()}</h3>
+                    <p><strong>👤 用户名：</strong>${user.username}</p>
+                    <p><strong>⭐ 会员等级：</strong>${user.membership === 'pro' ? '专业会员' : '免费会员'}</p>
+                    <p><strong>🔢 本月累计查询次数：</strong>${totalQueries}</p>
+                    
+                    <h4 style="margin-top:15px;">🌍 按国家分布</h4>
+                    <ul>${countryRows || '<li>暂无数据</li>'}</ul>
 
-    if (totalPages <= 1) return "";
+                    <h4>📋 按业务流程分布</h4>
+                    <ul>${processRows || '<li>暂无数据</li>'}</ul>
 
-    const prevDisabled = (page <= 1) ? "disabled" : "";
-    const nextDisabled = (page >= totalPages) ? "disabled" : "";
+                    <h4>🕒 最近5次查询</h4>
+                    <ul>${recent || '<li>暂无记录</li>'}</ul>
 
-    return `
-        <div class="result-pager">
-            <button class="pager-btn" onclick="prevResultPage()" ${prevDisabled}>上一页</button>
-            <span class="pager-info">第 ${page} / ${totalPages} 页 · ${start + 1}-${end} / ${total}</span>
-            <button class="pager-btn" onclick="nextResultPage()" ${nextDisabled}>下一页</button>
-        </div>
-    `;
-}
+                    <p style="color:#718096; margin-top:15px;">注：本报告基于您的真实查询历史生成，可点击上方按钮打印或保存为PDF。</p>
+                `;
+                document.getElementById('report-content').innerHTML = reportHTML;
+                document.getElementById('report-modal').classList.add('active');
+            };
 
-function __renderResultsPage() {
-    const resultsDiv = document.getElementById("results");
-    const country = __pagedCountry || (document.getElementById("country-select")?.value || "");
+            window.closeReportModal = function() {
+                document.getElementById('report-modal').classList.remove('active');
+            };
 
-    if (!__pagedResults || __pagedResults.length === 0) {
-        resultsDiv.innerHTML = `
-            <h3 style="color:#e74c3c; margin-top:15px;">未找到匹配结果</h3>
-            <p>请尝试选择其他国家或重新选择评估环节。</p>
-        `;
-        return;
-    }
+            window.openVideoModal = function() {
+                const modal = document.getElementById('video-modal');
+                const video = document.getElementById('demo-video');
+                if (modal && video) {
+                    modal.classList.add('active');
+                    video.play().catch(e => console.log('自动播放失败', e));
+                }
+            };
 
-    const total = __pagedResults.length;
-    const totalPages = Math.max(1, Math.ceil(total / __pagedPageSize));
-    const page = Math.min(Math.max(1, __pagedPage), totalPages);
-    __pagedPage = page;
-
-    const start = (page - 1) * __pagedPageSize;
-    const end = Math.min(start + __pagedPageSize, total);
-    const pageItems = __pagedResults.slice(start, end);
-
-    const header = `
-        <h3>📊 查询结果： ${currentProcess}（${country}）</h3>
-        <p>共发现 <strong>${total}</strong> 条风险提示：</p>
-    `;
-
-    const cards = pageItems.map(__renderOne).join("");
-    resultsDiv.innerHTML = header + __renderPager() + cards + __renderPager();
-
-    // 让用户翻页时视野保持在结果区（不影响其它区域）
-    try { resultsDiv.scrollIntoView({ behavior: "smooth", block: "start" }); } catch(e) {}
-}
-
-function prevResultPage() {
-    if (__pagedPage > 1) {
-        __pagedPage--;
-        __renderResultsPage();
-    }
-}
-
-function nextResultPage() {
-    const totalPages = Math.max(1, Math.ceil((__pagedResults?.length || 0) / __pagedPageSize));
-    if (__pagedPage < totalPages) {
-        __pagedPage++;
-        __renderResultsPage();
-    }
-}
-
-function displayResults(data) {
-    const country = document.getElementById("country-select").value;
-
-    __pagedResults = Array.isArray(data) ? data : [];
-    __pagedPage = 1;
-    __pagedCountry = country;
-
-    __renderResultsPage();
-}
-</script>
+            window.closeVideoModal = function() {
+                const modal = document.getElementById('video-modal');
+                const video = document.getElementById('demo-video');
+                if (modal && video) {
+                    modal.classList.remove('active');
+                    video.pause();
+                    video.currentTime = 0;
+                }
+            };
+        })();
+    </script>
 </body>
 </html>
